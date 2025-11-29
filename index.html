@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Doses de Fertilizantes</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-green-600: rgba(22, 101, 52, 1);
+
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            --font-family-mono: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            --font-size-base: 14px;
+            --font-size-sm: 12px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-base);
+            line-height: 1.5;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            margin: 0;
+            padding: var(--space-16);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0 0 var(--space-16) 0;
+            font-weight: var(--font-weight-semibold);
+            line-height: 1.2;
+        }
+
+        h1 { font-size: var(--font-size-3xl); }
+        h2 { font-size: var(--font-size-2xl); }
+        h3 { font-size: var(--font-size-xl); }
+
+        p { margin: 0 0 var(--space-16) 0; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+            padding-bottom: var(--space-24);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .header h1 {
+            margin-bottom: var(--space-8);
+            color: var(--color-primary);
+        }
+
+        .header p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-24);
+            margin-bottom: var(--space-32);
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-24);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: var(--space-12);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-20);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-8);
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: var(--color-red-500);
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: var(--space-12);
+            font-size: var(--font-size-base);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-family-base);
+            transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+        }
+
+        select:focus, input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-12);
+        }
+
+        .radio-wrapper {
+            display: flex;
+            align-items: flex-start;
+            padding: var(--space-12);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            border: 1px solid transparent;
+            transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+            cursor: pointer;
+        }
+
+        .radio-wrapper:hover {
+            background-color: var(--color-bg-1);
+            border-color: var(--color-border);
+        }
+
+        .radio-wrapper input[type="radio"] {
+            width: auto;
+            margin: var(--space-4) var(--space-12) 0 0;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+        }
+
+        .radio-label {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .radio-label strong {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .radio-label small {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12) var(--space-20);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all var(--duration-normal) var(--ease-standard);
+            width: 100%;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .btn--primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn--primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn--primary:active {
+            background: var(--color-primary-active);
+        }
+
+        .btn--secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn--secondary:hover {
+            background: var(--color-bg-1);
+        }
+
+        .btn--sm {
+            padding: var(--space-8) var(--space-16);
+            font-size: var(--font-size-sm);
+            width: auto;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--space-12);
+            margin-top: var(--space-20);
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, var(--color-bg-3), var(--color-background));
+            border: 2px solid var(--color-green-600);
+            border-radius: var(--radius-md);
+            padding: var(--space-16);
+            margin-bottom: var(--space-16);
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideIn 0.3s var(--ease-standard);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-12) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text);
+        }
+
+        .result-value {
+            font-family: var(--font-family-mono);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-green-600);
+            font-size: var(--font-size-lg);
+        }
+
+        .result-detail {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-4);
+        }
+
+        .formula-box {
+            background-color: var(--color-background);
+            border-left: 4px solid var(--color-primary);
+            padding: var(--space-12);
+            border-radius: var(--radius-sm);
+            margin: var(--space-12) 0;
+            font-family: var(--font-family-mono);
+            font-size: var(--font-size-sm);
+            color: var(--color-slate-500);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .alert {
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            border-left: 4px solid;
+        }
+
+        .alert--warning {
+            background-color: var(--color-bg-2);
+            border-left-color: var(--color-orange-500);
+            color: var(--color-orange-500);
+        }
+
+        .alert--info {
+            background-color: var(--color-bg-1);
+            border-left-color: var(--color-primary);
+            color: var(--color-slate-900);
+        }
+
+        .alert--success {
+            background-color: var(--color-bg-3);
+            border-left-color: var(--color-green-600);
+            color: var(--color-green-600);
+        }
+
+        .alert strong {
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--color-border);
+            margin: var(--space-24) 0;
+        }
+
+        .footer-section {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-24);
+            margin-top: var(--space-32);
+        }
+
+        .footer-section h2 {
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: var(--space-12);
+        }
+
+        .education-item {
+            margin-bottom: var(--space-24);
+            padding-bottom: var(--space-16);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .education-item h4 {
+            margin: var(--space-12) 0 var(--space-8) 0;
+            color: var(--color-primary);
+        }
+
+        .education-item p {
+            margin: 0 0 var(--space-8) 0;
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+        }
+
+        .education-item small {
+            color: var(--color-text-secondary);
+            display: block;
+            margin-top: var(--space-8);
+        }
+
+        .copy-feedback {
+            position: fixed;
+            bottom: var(--space-20);
+            right: var(--space-20);
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all var(--duration-normal) var(--ease-standard);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-sm {
+            font-size: var(--font-size-sm);
+        }
+
+        .text-secondary {
+            color: var(--color-text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🌱 Calculadora de Doses de Fertilizantes</h1>
+            <p>Calcule automaticamente as doses recomendadas de fertilizantes (em gramas) para seus vasos e plantas em substrato.</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- COLUNA ESQUERDA: INPUTS -->
+            <div class="card">
+                <h2>Configuração</h2>
+
+                <div class="form-group">
+                    <label class="form-label required" for="vaso-select">Selecionar Vaso Pré-catalogado</label>
+                    <select id="vaso-select">
+                        <option value="">-- Escolha um vaso --</option>
+                    </select>
+                    <small class="text-secondary" style="display: block; margin-top: var(--space-8);">Ou digite manualmente o volume abaixo</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="volume-input">Volume Manual (L)</label>
+                    <input type="number" id="volume-input" placeholder="Ex: 5" min="0.1" step="0.1">
+                    <small class="text-secondary" style="display: block; margin-top: var(--space-8);">Sobrescreve seleção do vaso acima</small>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label class="form-label required" for="source-n">Escolha a Fonte de Nitrogênio</label>
+                    <p class="alert alert--warning" style="margin-bottom: var(--space-12);">
+                        <strong>⚠ Importante:</strong> Escolha <strong>apenas uma</strong> fonte de N por aplicação para evitar confusão e sobredosagem.
+                    </p>
+                    <div class="radio-group">
+                        <label class="radio-wrapper">
+                            <input type="radio" name="source-n" value="ureia" id="ureia-radio">
+                            <div class="radio-label">
+                                <strong>Ureia (45% N)</strong>
+                                <small>Liberação mais rápida; padrão para adubação de cobertura</small>
+                            </div>
+                        </label>
+
+                        <label class="radio-wrapper">
+                            <input type="radio" name="source-n" value="sulfato-amonio" id="sulfato-radio">
+                            <div class="radio-label">
+                                <strong>Sulfato de Amônio (20% N)</strong>
+                                <small>Efeito acidificante; menos sujeito à volatilização</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn--primary" id="calcular-btn">Calcular Doses</button>
+                    <button class="btn btn--secondary" id="limpar-btn">Limpar Tudo</button>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA: RESULTADOS -->
+            <div class="card">
+                <h2>Resultados</h2>
+
+                <div id="resultado-vazio" class="text-center text-secondary" style="padding: var(--space-32) 0;">
+                    <p>Preencha os campos à esquerda e clique em <strong>Calcular Doses</strong> para ver os resultados aqui.</p>
+                </div>
+
+                <div id="resultado-container" class="hidden">
+                    <div class="result-card show" id="resultado-card">
+                        <div class="result-item">
+                            <span class="result-label">Volume do Vaso</span>
+                            <span class="result-value"><span id="resultado-volume">0</span> L</span>
+                        </div>
+
+                        <div class="divider" style="margin: var(--space-8) 0;"></div>
+
+                        <div class="result-item">
+                            <div>
+                                <div class="result-label">Nitrogênio (N) Total</div>
+                                <div class="result-detail">100 mg/L</div>
+                            </div>
+                            <span class="result-value"><span id="resultado-n-g">0</span> g</span>
+                        </div>
+                        <div class="result-detail" style="text-align: right; margin-top: var(--space-4);">
+                            <span id="resultado-n-mg">0</span> mg
+                        </div>
+
+                        <div class="result-item">
+                            <div>
+                                <div class="result-label">Fósforo (P₂O₅) Total</div>
+                                <div class="result-detail">200 mg/L</div>
+                            </div>
+                            <span class="result-value"><span id="resultado-p-g">0</span> g</span>
+                        </div>
+                        <div class="result-detail" style="text-align: right; margin-top: var(--space-4);">
+                            <span id="resultado-p-mg">0</span> mg
+                        </div>
+
+                        <div class="result-item">
+                            <div>
+                                <div class="result-label">Potássio (K₂O) Total</div>
+                                <div class="result-detail">100 mg/L</div>
+                            </div>
+                            <span class="result-value"><span id="resultado-k-g">0</span> g</span>
+                        </div>
+                        <div class="result-detail" style="text-align: right; margin-top: var(--space-4);">
+                            <span id="resultado-k-mg">0</span> mg
+                        </div>
+
+                        <div class="divider" style="margin: var(--space-12) 0;"></div>
+
+                        <div class="alert alert--success" style="margin-bottom: var(--space-12);">
+                            <strong>Dose Recomendada do Fertilizante</strong>
+                        </div>
+
+                        <div id="resultado-fertilizante" style="margin-bottom: var(--space-16);"></div>
+
+                        <div class="formula-box" id="resultado-formula"></div>
+
+                        <div class="btn-group" style="margin-top: var(--space-16);">
+                            <button class="btn btn--primary btn--sm" id="copiar-btn" style="width: 100%;">📋 Copiar Resultado</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO EDUCATIVA -->
+        <div class="footer-section">
+            <h2>📚 Guia: Quando Usar Cada Fonte de N</h2>
+
+            <div class="education-item">
+                <h4>🔬 Ureia (45% N)</h4>
+                <p><strong>Recomendado para:</strong> Adubação de cobertura em culturas não sensíveis à volatilização. Fonte de nitrogênio com liberação relativamente rápida e alta concentração.</p>
+                <p><strong>Cuidados:</strong> Evitar aplicação na superfície sem incorporação em substratos muito expostos, pois há risco de volatilização de amônia. Idealmente, misturar ao substrato ou regar após aplicação.</p>
+                <small>💡 Dica: Use ureia quando precisar de efeito rápido e tiver condições de incorporar bem ao substrato.</small>
+            </div>
+
+            <div class="education-item">
+                <h4>⚗️ Sulfato de Amônio (20% N)</h4>
+                <p><strong>Recomendado para:</strong> Quando deseja-se liberar nitrogênio com efeito acidificante simultâneo (útil em solos alcalinos ou quando se quer corrigir pH). Também é menos sujeito à volatilização que a ureia.</p>
+                <p><strong>Cuidados:</strong> <strong>Não recomendado em solos já ácidos</strong> sem correção adicional de pH. Use com critério em substratos sensíveis à acidificação.</p>
+                <small>💡 Dica: Sulfato de amônio é sua melhor opção se o substrato tende a ser alcalino ou se o risco de perda de amônia é preocupante.</small>
+            </div>
+
+            <div class="education-item">
+                <h4>🚫 Regra Crítica: Não Misture Fontes de N</h4>
+                <p><strong>Não utilize ureia e sulfato de amônio ao mesmo tempo na mesma aplicação.</strong> Escolha <strong>uma única fonte de N</strong> por aplicação. Esta calculadora mostra ambas as opções para comparação, mas a prática deve ser com uma delas apenas.</p>
+                <p><strong>Por quê?</strong> Misturar fontes pode levar a:</p>
+                <ul style="margin: var(--space-8) 0; padding-left: var(--space-24);">
+                    <li>Confusão sobre a dose realmente aplicada</li>
+                    <li>Risco de sobredosagem de nitrogênio</li>
+                    <li>Efeitos não previstos na correção de pH</li>
+                </ul>
+            </div>
+
+            <div class="education-item">
+                <h4>🌾 Superfosfato Simples (18% P₂O₅)</h4>
+                <p>Fornecedor de fósforo (P₂O₅) com baixo teor relativo. Comumente usado em aplicações em substrato e terra que aceitam material granulado. Pode ser incorporado antes do plantio ou usado em fertirrigação após dissolução parcial.</p>
+                <small>💡 Nota: Verifique se seu tipo de aplicação (sólida vs. líquida) é compatível com superfosfato simples.</small>
+            </div>
+
+            <div class="education-item">
+                <h4>🔑 Cloreto de Potássio (KCl) – 60% K₂O</h4>
+                <p>Fornecedor de potássio essencial para força, produção de frutos e resistência a estresse. Benéfico em praticamente todas as culturas.</p>
+                <p><strong>Cuidado:</strong> Algumas plantas sensíveis podem sofrer com excesso de cloro (Cl). Se a cultura é sensível a Cl (ex.: algumas ornamentais, abacaxá, abacate), considere fontes alternativas como sulfato de potássio.</p>
+                <small>💡 Nota: Para a maioria das plantas e jardins, KCl é seguro; risco de Cl-toxidade é raro em adubação equilibrada.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-feedback" id="copy-feedback">✓ Resultado copiado para a área de transferência!</div>
+
+    <script>
+        // ============================================
+        // CATÁLOGO DE VASOS (dados embutidos)
+        // ============================================
+        const vasosCatalogo = [
+            { id: 1, nome: "Vaso 1 (3L)", volume: 3 },
+            { id: 2, nome: "Vaso 2 (5L)", volume: 5 },
+            { id: 3, nome: "Vaso 3 (8L)", volume: 8 },
+            { id: 4, nome: "Vaso 4 (10L)", volume: 10 },
+            { id: 5, nome: "Vaso 5 (15L)", volume: 15 },
+            { id: 6, nome: "Vaso 6 (20L)", volume: 20 },
+        ];
+
+        // ============================================
+        // DOSES RECOMENDADAS (mg/L) - Fixas conforme especificação
+        // ============================================
+        const doses = {
+            N: 100,      // mg/L de Nitrogênio
+            P2O5: 200,   // mg/L de Fósforo
+            K2O: 100     // mg/L de Potássio
+        };
+
+        // ============================================
+        // CONCENTRAÇÃO DOS FERTILIZANTES (%)
+        // ============================================
+        const fertilizantes = {
+            ureia: { nome: "Ureia", concentracao: 0.45, nutriente: "N", descricao: "de ureia" },
+            sulfato_amonio: { nome: "Sulfato de Amônio", concentracao: 0.20, nutriente: "N", descricao: "de sulfato de amônio" },
+            superfosfato: { nome: "Superfosfato Simples", concentracao: 0.18, nutriente: "P2O5", descricao: "de superfosfato simples" },
+            kcl: { nome: "Cloreto de Potássio", concentracao: 0.60, nutriente: "K2O", descricao: "de cloreto de potássio" }
+        };
+
+        // ============================================
+        // ELEMENTOS DO DOM
+        // ============================================
+        const vasoSelect = document.getElementById('vaso-select');
+        const volumeInput = document.getElementById('volume-input');
+        const calcularBtn = document.getElementById('calcular-btn');
+        const limparBtn = document.getElementById('limpar-btn');
+        const copiarBtn = document.getElementById('copiar-btn');
+        const resultadoContainer = document.getElementById('resultado-container');
+        const resultadoVazio = document.getElementById('resultado-vazio');
+        const copyFeedback = document.getElementById('copy-feedback');
+
+        // ============================================
+        // INICIALIZAÇÃO: Popular dropdown de vasos
+        // ============================================
+        function inicializarVasos() {
+            vasosCatalogo.forEach(vaso => {
+                const option = document.createElement('option');
+                option.value = vaso.volume;
+                option.textContent = vaso.nome;
+                vasoSelect.appendChild(option);
+            });
+        }
+
+        // ============================================
+        // FUNÇÃO: Arredondar com 2 casas decimais
+        // ============================================
+        function arredondar(valor) {
+            return Math.round(valor * 100) / 100;
+        }
+
+        // ============================================
+        // FUNÇÃO: Formatar número com separador decimal
+        // ============================================
+        function formatarNumero(valor) {
+            return arredondar(valor).toString().replace('.', '.');
+        }
+
+        // ============================================
+        // FUNÇÃO PRINCIPAL: Calcular Doses
+        // ============================================
+        function calcularDoses() {
+            // Obter volume
+            let volume = parseFloat(volumeInput.value) || (vasoSelect.value ? parseFloat(vasoSelect.value) : null);
+
+            // Validação 1: Volume vazio
+            if (!volume || volume <= 0) {
+                alert('⚠️ Por favor, selecione um vaso ou digite um volume válido (> 0 L).');
+                return;
+            }
+
+            // Obter fonte de N escolhida
+            const sourceN = document.querySelector('input[name="source-n"]:checked');
+            if (!sourceN) {
+                alert('⚠️ Por favor, escolha uma fonte de Nitrogênio (Ureia ou Sulfato de Amônio).');
+                return;
+            }
+
+            const sourceValue = sourceN.value;
+
+            // ==========================================
+            // CÁLCULOS DE NUTRIENTES TOTAIS
+            // ==========================================
+            // Fórmula: Nutriente_total_mg = Dose (mg/L) × Volume (L)
+            const N_total_mg = doses.N * volume;
+            const P2O5_total_mg = doses.P2O5 * volume;
+            const K2O_total_mg = doses.K2O * volume;
+
+            // Converter mg → g
+            const N_total_g = N_total_mg / 1000;
+            const P2O5_total_g = P2O5_total_mg / 1000;
+            const K2O_total_g = K2O_total_mg / 1000;
+
+            // ==========================================
+            // CÁLCULOS DE FERTILIZANTES COMERCIAIS
+            // ==========================================
+            // Fórmula: Fertilizante (g) = Nutriente_total_g / Concentração
+
+            let doseFertilizanteN;
+            let nomeFertilizanteN;
+            let formulaN;
+
+            if (sourceValue === 'ureia') {
+                doseFertilizanteN = N_total_g / fertilizantes.ureia.concentracao;
+                nomeFertilizanteN = fertilizantes.ureia.nome;
+                formulaN = `${formatarNumero(N_total_g)} g ÷ ${fertilizantes.ureia.concentracao} = ${formatarNumero(doseFertilizanteN)} g`;
+            } else {
+                doseFertilizanteN = N_total_g / fertilizantes.sulfato_amonio.concentracao;
+                nomeFertilizanteN = fertilizantes.sulfato_amonio.nome;
+                formulaN = `${formatarNumero(N_total_g)} g ÷ ${fertilizantes.sulfato_amonio.concentracao} = ${formatarNumero(doseFertilizanteN)} g`;
+            }
+
+            const doseFertilizanteP = P2O5_total_g / fertilizantes.superfosfato.concentracao;
+            const formulaP = `${formatarNumero(P2O5_total_g)} g ÷ ${fertilizantes.superfosfato.concentracao} = ${formatarNumero(doseFertilizanteP)} g`;
+
+            const doseFertilizanteK = K2O_total_g / fertilizantes.kcl.concentracao;
+            const formulaK = `${formatarNumero(K2O_total_g)} g ÷ ${fertilizantes.kcl.concentracao} = ${formatarNumero(doseFertilizanteK)} g`;
+
+            // ==========================================
+            // EXIBIR RESULTADOS
+            // ==========================================
+            exibirResultados({
+                volume: arredondar(volume),
+                N_total_g: arredondar(N_total_g),
+                N_total_mg: arredondar(N_total_mg),
+                P2O5_total_g: arredondar(P2O5_total_g),
+                P2O5_total_mg: arredondar(P2O5_total_mg),
+                K2O_total_g: arredondar(K2O_total_g),
+                K2O_total_mg: arredondar(K2O_total_mg),
+                doseFertilizanteN: arredondar(doseFertilizanteN),
+                nomeFertilizanteN: nomeFertilizanteN,
+                doseFertilizanteP: arredondar(doseFertilizanteP),
+                doseFertilizanteK: arredondar(doseFertilizanteK),
+                formulaN: formulaN,
+                formulaP: formulaP,
+                formulaK: formulaK
+            });
+        }
+
+        // ============================================
+        // FUNÇÃO: Exibir Resultados na UI
+        // ============================================
+        function exibirResultados(dados) {
+            // Atualizar valores de nutrientes
+            document.getElementById('resultado-volume').textContent = formatarNumero(dados.volume);
+            document.getElementById('resultado-n-g').textContent = formatarNumero(dados.N_total_g);
+            document.getElementById('resultado-n-mg').textContent = formatarNumero(dados.N_total_mg);
+            document.getElementById('resultado-p-g').textContent = formatarNumero(dados.P2O5_total_g);
+            document.getElementById('resultado-p-mg').textContent = formatarNumero(dados.P2O5_total_mg);
+            document.getElementById('resultado-k-g').textContent = formatarNumero(dados.K2O_total_g);
+            document.getElementById('resultado-k-mg').textContent = formatarNumero(dados.K2O_total_mg);
+
+            // Exibir doses de fertilizantes comerciais
+            const fertilizanteHTML = `
+                <div class="result-item">
+                    <div>
+                        <div class="result-label">${dados.nomeFertilizanteN}</div>
+                        <div class="result-detail">Para suprir Nitrogênio</div>
+                    </div>
+                    <span class="result-value">${formatarNumero(dados.doseFertilizanteN)} g</span>
+                </div>
+                <div class="result-item">
+                    <div>
+                        <div class="result-label">${fertilizantes.superfosfato.nome}</div>
+                        <div class="result-detail">Para suprir Fósforo</div>
+                    </div>
+                    <span class="result-value">${formatarNumero(dados.doseFertilizanteP)} g</span>
+                </div>
+                <div class="result-item">
+                    <div>
+                        <div class="result-label">${fertilizantes.kcl.nome}</div>
+                        <div class="result-detail">Para suprir Potássio</div>
+                    </div>
+                    <span class="result-value">${formatarNumero(dados.doseFertilizanteK)} g</span>
+                </div>
+            `;
+            document.getElementById('resultado-fertilizante').innerHTML = fertilizanteHTML;
+
+            // Exibir fórmulas de cálculo
+            const formulasHTML = `Cálculo de Nitrogênio (${dados.nomeFertilizanteN}):
+${dados.formulaN}
+
+Cálculo de Fósforo (Superfosfato Simples):
+${dados.formulaP}
+
+Cálculo de Potássio (Cloreto de Potássio):
+${dados.formulaK}`;
+            document.getElementById('resultado-formula').textContent = formulasHTML;
+
+            // Mostrar card de resultados
+            resultadoContainer.classList.remove('hidden');
+            resultadoVazio.classList.add('hidden');
+        }
+
+        // ============================================
+        // FUNÇÃO: Copiar Resultado para Área de Transferência
+        // ============================================
+        function copiarResultado() {
+            const volume = document.getElementById('resultado-volume').textContent;
+            const n_g = document.getElementById('resultado-n-g').textContent;
+            const n_mg = document.getElementById('resultado-n-mg').textContent;
+            const p_g = document.getElementById('resultado-p-g').textContent;
+            const p_mg = document.getElementById('resultado-p-mg').textContent;
+            const k_g = document.getElementById('resultado-k-g').textContent;
+            const k_mg = document.getElementById('resultado-k-mg').textContent;
+
+            const textoResultado = `
+RESULTADO DA CALCULADORA DE FERTILIZANTES
+
+Volume do Vaso: ${volume} L
+
+NUTRIENTES TOTAIS:
+- Nitrogênio (N): ${n_g} g (${n_mg} mg)
+- Fósforo (P₂O₅): ${p_g} g (${p_mg} mg)
+- Potássio (K₂O): ${k_g} g (${k_mg} mg)
+
+DOSES DE FERTILIZANTES COMERCIAIS:
+${document.getElementById('resultado-fertilizante').textContent}
+
+FÓRMULAS DE CÁLCULO:
+${document.getElementById('resultado-formula').textContent}
+
+Gerado em: ${new Date().toLocaleString('pt-BR')}
+            `.trim();
+
+            navigator.clipboard.writeText(textoResultado).then(() => {
+                // Mostrar feedback visual
+                copyFeedback.classList.add('show');
+                setTimeout(() => {
+                    copyFeedback.classList.remove('show');
+                }, 3000);
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        // ============================================
+        // FUNÇÃO: Limpar Tudo
+        // ============================================
+        function limparTudo() {
+            vasoSelect.value = '';
+            volumeInput.value = '';
+            document.querySelectorAll('input[name="source-n"]').forEach(radio => radio.checked = false);
+            resultadoContainer.classList.add('hidden');
+            resultadoVazio.classList.remove('hidden');
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        calcularBtn.addEventListener('click', calcularDoses);
+        limparBtn.addEventListener('click', limparTudo);
+        copiarBtn.addEventListener('click', copiarResultado);
+
+        // Sobrescrever seleção do vaso quando usuário digita volume manual
+        volumeInput.addEventListener('input', () => {
+            if (volumeInput.value) {
+                vasoSelect.value = '';
+            }
+        });
+
+        // Limpar volume manual quando usuário seleciona vaso
+        vasoSelect.addEventListener('change', () => {
+            if (vasoSelect.value) {
+                volumeInput.value = '';
+            }
+        });
+
+        // Enter para calcular
+        volumeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calcularDoses();
+        });
+
+        // ============================================
+        // INICIALIZAÇÃO AO CARREGAR PÁGINA
+        // ============================================
+        window.addEventListener('DOMContentLoaded', () => {
+            inicializarVasos();
+        });
+    </script>
+</body>
+</html>
