@@ -214,7 +214,7 @@
             border-color: var(--color-border);
         }
 
-        .radio-wrapper input[type="radio"] {
+        .radio-wrapper input[type="radio"], .radio-wrapper input[type="checkbox"] {
             width: auto;
             margin: var(--space-4) var(--space-12) 0 0;
             cursor: pointer;
@@ -496,7 +496,6 @@
         </header>
 
         <div class="main-grid">
-            <!-- COLUNA ESQUERDA: INPUTS -->
             <div class="card">
                 <h2>Configuração</h2>
 
@@ -518,9 +517,6 @@
 
                 <div class="form-group">
                     <label class="form-label required" for="source-n">Escolha a Fonte de Nitrogênio</label>
-                    <p class="alert alert--warning" style="margin-bottom: var(--space-12);">
-                        <strong>⚠ Importante:</strong> Escolha <strong>apenas uma</strong> fonte de N por aplicação para evitar confusão e sobredosagem.
-                    </p>
                     <div class="radio-group">
                         <label class="radio-wrapper">
                             <input type="radio" name="source-n" value="ureia" id="ureia-radio">
@@ -534,7 +530,22 @@
                             <input type="radio" name="source-n" value="sulfato-amonio" id="sulfato-radio">
                             <div class="radio-label">
                                 <strong>Sulfato de Amônio (20% N)</strong>
-                                <small>Efeito acidificante; menos sujeito à volatilização</small>
+                                <small>Menor teor de N; volatiza menos em termos absolutos</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Ajuste de Cloro</label>
+                    <div class="radio-group">
+                        <label class="radio-wrapper">
+                            <input type="checkbox" id="cloro-check">
+                            <div class="radio-label">
+                                <strong>Planta sensível a Cloro?</strong>
+                                <small>Adiciona 20% ao resultado do potássio se selecionado</small>
                             </div>
                         </label>
                     </div>
@@ -546,7 +557,6 @@
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: RESULTADOS -->
             <div class="card">
                 <h2>Resultados</h2>
 
@@ -614,33 +624,21 @@
             </div>
         </div>
 
-        <!-- SEÇÃO EDUCATIVA -->
         <div class="footer-section">
             <h2>📚 Guia: Quando Usar Cada Fonte de N</h2>
 
             <div class="education-item">
                 <h4>🔬 Ureia (45% N)</h4>
-                <p><strong>Recomendado para:</strong> Adubação de cobertura em culturas não sensíveis à volatilização. Fonte de nitrogênio com liberação relativamente rápida e alta concentração.</p>
+                <p><strong>Recomendado para:</strong> Adubação de cobertura. Fonte de nitrogênio com liberação relativamente rápida e alta concentração.</p>
                 <p><strong>Cuidados:</strong> Evitar aplicação na superfície sem incorporação em substratos muito expostos, pois há risco de volatilização de amônia. Idealmente, misturar ao substrato ou regar após aplicação.</p>
                 <small>💡 Dica: Use ureia quando precisar de efeito rápido e tiver condições de incorporar bem ao substrato.</small>
             </div>
 
             <div class="education-item">
                 <h4>⚗️ Sulfato de Amônio (20% N)</h4>
-                <p><strong>Recomendado para:</strong> Quando deseja-se liberar nitrogênio com efeito acidificante simultâneo (útil em solos alcalinos ou quando se quer corrigir pH). Também é menos sujeito à volatilização que a ureia.</p>
-                <p><strong>Cuidados:</strong> <strong>Não recomendado em solos já ácidos</strong> sem correção adicional de pH. Use com critério em substratos sensíveis à acidificação.</p>
-                <small>💡 Dica: Sulfato de amônio é sua melhor opção se o substrato tende a ser alcalino ou se o risco de perda de amônia é preocupante.</small>
-            </div>
-
-            <div class="education-item">
-                <h4>🚫 Regra Crítica: Não Misture Fontes de N</h4>
-                <p><strong>Não utilize ureia e sulfato de amônio ao mesmo tempo na mesma aplicação.</strong> Escolha <strong>uma única fonte de N</strong> por aplicação. Esta calculadora mostra ambas as opções para comparação, mas a prática deve ser com uma delas apenas.</p>
-                <p><strong>Por quê?</strong> Misturar fontes pode levar a:</p>
-                <ul style="margin: var(--space-8) 0; padding-left: var(--space-24);">
-                    <li>Confusão sobre a dose realmente aplicada</li>
-                    <li>Risco de sobredosagem de nitrogênio</li>
-                    <li>Efeitos não previstos na correção de pH</li>
-                </ul>
+                <p><strong>Recomendado para:</strong> Fornecimento de Nitrogênio.</p>
+                <p><strong>Volatilização:</strong> O sulfato de amônio volatiza de forma semelhante (igual), mas a perda total é menor porque o fertilizante possui um teor menor de nitrogênio.</p>
+                <small>💡 Dica: Opção para fornecer nitrogênio.</small>
             </div>
 
             <div class="education-item">
@@ -651,9 +649,9 @@
 
             <div class="education-item">
                 <h4>🔑 Cloreto de Potássio (KCl) – 60% K₂O</h4>
-                <p>Fornecedor de potássio essencial para força, produção de frutos e resistência a estresse. Benéfico em praticamente todas as culturas.</p>
-                <p><strong>Cuidado:</strong> Algumas plantas sensíveis podem sofrer com excesso de cloro (Cl). Se a cultura é sensível a Cl (ex.: algumas ornamentais, abacaxá, abacate), considere fontes alternativas como sulfato de potássio.</p>
-                <small>💡 Nota: Para a maioria das plantas e jardins, KCl é seguro; risco de Cl-toxidade é raro em adubação equilibrada.</small>
+                <p>Fornecedor de potássio essencial para força e produção de frutos. O Cloro é um ativador de muitas enzimas.</p>
+                <p><strong>Cuidado:</strong> Algumas plantas sensíveis podem sofrer com excesso de cloro (Cl). Caso a planta seja sensível, utilize a opção de ajuste na calculadora para adicionar 20% ao resultado.</p>
+                <small>💡 Nota: Para a maioria das plantas e jardins, KCl é seguro.</small>
             </div>
         </div>
     </div>
@@ -703,6 +701,7 @@
         const resultadoContainer = document.getElementById('resultado-container');
         const resultadoVazio = document.getElementById('resultado-vazio');
         const copyFeedback = document.getElementById('copy-feedback');
+        const cloroCheck = document.getElementById('cloro-check');
 
         // ============================================
         // INICIALIZAÇÃO: Popular dropdown de vasos
@@ -787,8 +786,15 @@
             const doseFertilizanteP = P2O5_total_g / fertilizantes.superfosfato.concentracao;
             const formulaP = `${formatarNumero(P2O5_total_g)} g ÷ ${fertilizantes.superfosfato.concentracao} = ${formatarNumero(doseFertilizanteP)} g`;
 
-            const doseFertilizanteK = K2O_total_g / fertilizantes.kcl.concentracao;
-            const formulaK = `${formatarNumero(K2O_total_g)} g ÷ ${fertilizantes.kcl.concentracao} = ${formatarNumero(doseFertilizanteK)} g`;
+            let doseFertilizanteK = K2O_total_g / fertilizantes.kcl.concentracao;
+            let formulaK = `${formatarNumero(K2O_total_g)} g ÷ ${fertilizantes.kcl.concentracao} = ${formatarNumero(doseFertilizanteK)} g`;
+
+            // AJUSTE DE CLORO (Se planta sensível, +20%)
+            if (cloroCheck.checked) {
+                const doseOriginal = doseFertilizanteK;
+                doseFertilizanteK = doseOriginal * 1.20;
+                formulaK += `\n+ 20% (Sensibilidade a Cloro): ${formatarNumero(doseOriginal)} g x 1.20 = ${formatarNumero(doseFertilizanteK)} g`;
+            }
 
             // ==========================================
             // EXIBIR RESULTADOS
@@ -914,6 +920,7 @@ Gerado em: ${new Date().toLocaleString('pt-BR')}
         function limparTudo() {
             vasoSelect.value = '';
             volumeInput.value = '';
+            cloroCheck.checked = false;
             document.querySelectorAll('input[name="source-n"]').forEach(radio => radio.checked = false);
             resultadoContainer.classList.add('hidden');
             resultadoVazio.classList.remove('hidden');
